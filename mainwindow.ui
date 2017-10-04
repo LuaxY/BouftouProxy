@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>543</width>
+    <height>225</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Byte Code Proxy</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QGroupBox" name="dofusGroup">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>351</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Client</string>
+    </property>
+    <widget class="QPushButton" name="dofusAppPathBrowserButton">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>20</y>
+       <width>41</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="dofusAppPathLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>21</y>
+       <width>281</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="dofusStartButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Dofus</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="dofusInjectionStatus">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>50</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Status</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="byteCodeGroup">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>100</y>
+      <width>351</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Byte Code</string>
+    </property>
+    <widget class="QPushButton" name="byteCodePathBrowserButton">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>20</y>
+       <width>41</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="byteCodePathLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>21</y>
+       <width>281</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="byteCodeSendButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Send</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="byteCodeStatus">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>50</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Status</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <zorder>dofusGroup</zorder>
+    <zorder>dofusAppPathBrowserButton</zorder>
+    <zorder>dofusAppPathLineEdit</zorder>
+    <zorder>byteCodePathBrowserButton</zorder>
+    <zorder>byteCodePathLineEdit</zorder>
+    <zorder>byteCodeSendButton</zorder>
+    <zorder>byteCodeStatus</zorder>
+   </widget>
+   <widget class="QGroupBox" name="proxyGroup">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>10</y>
+      <width>161</width>
+      <height>171</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Proxy</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>543</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFichier">
+    <property name="title">
+     <string>Fichier</string>
+    </property>
+    <addaction name="actionQuitter"/>
+   </widget>
+   <addaction name="menuFichier"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="statusTip">
+    <string/>
+   </property>
+  </widget>
+  <action name="actionQuitter">
+   <property name="text">
+    <string>Quitter</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
