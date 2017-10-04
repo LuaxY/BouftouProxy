@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>dll/hook_connect.dll</file>
+    </qresource>
+</RCC>

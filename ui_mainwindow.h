@@ -29,19 +29,24 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
-    QAction *actionQuitter;
+    QAction *actionQuit;
+    QAction *actionConsole;
     QWidget *centralWidget;
     QGroupBox *dofusGroup;
     QPushButton *dofusAppPathBrowserButton;
     QLineEdit *dofusAppPathLineEdit;
     QPushButton *dofusStartButton;
-    QLabel *dofusInjectionStatus;
+    QLabel *dofusStatus;
     QGroupBox *byteCodeGroup;
     QPushButton *byteCodePathBrowserButton;
     QLineEdit *byteCodePathLineEdit;
     QPushButton *byteCodeSendButton;
     QLabel *byteCodeStatus;
     QGroupBox *proxyGroup;
+    QLineEdit *proxyAuthPortLineEdit;
+    QLineEdit *proxyGamePortLineEdit;
+    QLabel *proxyAuthPortLabel;
+    QLabel *proxyGamePortLabel;
     QMenuBar *menuBar;
     QMenu *menuFichier;
     QStatusBar *statusBar;
@@ -50,9 +55,11 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(543, 225);
-        actionQuitter = new QAction(MainWindow);
-        actionQuitter->setObjectName(QStringLiteral("actionQuitter"));
+        MainWindow->resize(501, 225);
+        actionQuit = new QAction(MainWindow);
+        actionQuit->setObjectName(QStringLiteral("actionQuit"));
+        actionConsole = new QAction(MainWindow);
+        actionConsole->setObjectName(QStringLiteral("actionConsole"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         dofusGroup = new QGroupBox(centralWidget);
@@ -67,10 +74,10 @@ public:
         dofusStartButton = new QPushButton(dofusGroup);
         dofusStartButton->setObjectName(QStringLiteral("dofusStartButton"));
         dofusStartButton->setGeometry(QRect(10, 50, 75, 23));
-        dofusInjectionStatus = new QLabel(dofusGroup);
-        dofusInjectionStatus->setObjectName(QStringLiteral("dofusInjectionStatus"));
-        dofusInjectionStatus->setGeometry(QRect(100, 50, 241, 20));
-        dofusInjectionStatus->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
+        dofusStatus = new QLabel(dofusGroup);
+        dofusStatus->setObjectName(QStringLiteral("dofusStatus"));
+        dofusStatus->setGeometry(QRect(100, 50, 241, 20));
+        dofusStatus->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
         byteCodeGroup = new QGroupBox(centralWidget);
         byteCodeGroup->setObjectName(QStringLiteral("byteCodeGroup"));
         byteCodeGroup->setGeometry(QRect(10, 100, 351, 81));
@@ -87,20 +94,27 @@ public:
         byteCodeStatus->setObjectName(QStringLiteral("byteCodeStatus"));
         byteCodeStatus->setGeometry(QRect(100, 50, 241, 20));
         byteCodeStatus->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
-        dofusGroup->raise();
-        dofusAppPathBrowserButton->raise();
-        dofusAppPathLineEdit->raise();
-        byteCodePathBrowserButton->raise();
-        byteCodePathLineEdit->raise();
-        byteCodeSendButton->raise();
-        byteCodeStatus->raise();
         proxyGroup = new QGroupBox(centralWidget);
         proxyGroup->setObjectName(QStringLiteral("proxyGroup"));
-        proxyGroup->setGeometry(QRect(370, 10, 161, 171));
+        proxyGroup->setGeometry(QRect(370, 10, 121, 171));
+        proxyAuthPortLineEdit = new QLineEdit(proxyGroup);
+        proxyAuthPortLineEdit->setObjectName(QStringLiteral("proxyAuthPortLineEdit"));
+        proxyAuthPortLineEdit->setGeometry(QRect(70, 20, 41, 20));
+        proxyAuthPortLineEdit->setAlignment(Qt::AlignCenter);
+        proxyGamePortLineEdit = new QLineEdit(proxyGroup);
+        proxyGamePortLineEdit->setObjectName(QStringLiteral("proxyGamePortLineEdit"));
+        proxyGamePortLineEdit->setGeometry(QRect(70, 50, 41, 20));
+        proxyGamePortLineEdit->setAlignment(Qt::AlignCenter);
+        proxyAuthPortLabel = new QLabel(proxyGroup);
+        proxyAuthPortLabel->setObjectName(QStringLiteral("proxyAuthPortLabel"));
+        proxyAuthPortLabel->setGeometry(QRect(10, 20, 61, 16));
+        proxyGamePortLabel = new QLabel(proxyGroup);
+        proxyGamePortLabel->setObjectName(QStringLiteral("proxyGamePortLabel"));
+        proxyGamePortLabel->setGeometry(QRect(10, 50, 61, 16));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 543, 21));
+        menuBar->setGeometry(QRect(0, 0, 501, 21));
         menuFichier = new QMenu(menuBar);
         menuFichier->setObjectName(QStringLiteral("menuFichier"));
         MainWindow->setMenuBar(menuBar);
@@ -109,7 +123,9 @@ public:
         MainWindow->setStatusBar(statusBar);
 
         menuBar->addAction(menuFichier->menuAction());
-        menuFichier->addAction(actionQuitter);
+        menuFichier->addAction(actionConsole);
+        menuFichier->addSeparator();
+        menuFichier->addAction(actionQuit);
 
         retranslateUi(MainWindow);
 
@@ -118,17 +134,22 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Byte Code Proxy", Q_NULLPTR));
-        actionQuitter->setText(QApplication::translate("MainWindow", "Quitter", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "BouftouProxy", Q_NULLPTR));
+        actionQuit->setText(QApplication::translate("MainWindow", "Quitter", Q_NULLPTR));
+        actionConsole->setText(QApplication::translate("MainWindow", "Console", Q_NULLPTR));
         dofusGroup->setTitle(QApplication::translate("MainWindow", "Client", Q_NULLPTR));
         dofusAppPathBrowserButton->setText(QApplication::translate("MainWindow", "...", Q_NULLPTR));
         dofusStartButton->setText(QApplication::translate("MainWindow", "Start Dofus", Q_NULLPTR));
-        dofusInjectionStatus->setText(QApplication::translate("MainWindow", "Status", Q_NULLPTR));
+        dofusStatus->setText(QApplication::translate("MainWindow", "Status", Q_NULLPTR));
         byteCodeGroup->setTitle(QApplication::translate("MainWindow", "Byte Code", Q_NULLPTR));
         byteCodePathBrowserButton->setText(QApplication::translate("MainWindow", "...", Q_NULLPTR));
         byteCodeSendButton->setText(QApplication::translate("MainWindow", "Send", Q_NULLPTR));
         byteCodeStatus->setText(QApplication::translate("MainWindow", "Status", Q_NULLPTR));
         proxyGroup->setTitle(QApplication::translate("MainWindow", "Proxy", Q_NULLPTR));
+        proxyAuthPortLineEdit->setText(QString());
+        proxyGamePortLineEdit->setText(QString());
+        proxyAuthPortLabel->setText(QApplication::translate("MainWindow", "Auth port :", Q_NULLPTR));
+        proxyGamePortLabel->setText(QApplication::translate("MainWindow", "Game port :", Q_NULLPTR));
         menuFichier->setTitle(QApplication::translate("MainWindow", "Fichier", Q_NULLPTR));
 #ifndef QT_NO_STATUSTIP
         statusBar->setStatusTip(QString());
