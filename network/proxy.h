@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QTcpSocket>
 #include "utils/types.h"
+#include "utils/logger.h"
 #include "messages/imessage.h"
 
 class Proxy : public QObject
@@ -11,9 +12,11 @@ class Proxy : public QObject
     Q_OBJECT
 private:
     ByteArray buffer;
+    QString role;
+    Logger logger;
 
 public:
-    explicit Proxy(QObject *parent = nullptr);
+    Proxy(QObject *parent = nullptr, QString _role = "UNK");
 
     virtual void start();
     virtual void stop();

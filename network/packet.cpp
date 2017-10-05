@@ -15,6 +15,10 @@ void Packet::serialize(IMessage* message, ByteArray& buffer)
 
     writer.writeUShort(header);
 
+    if (message->getInstanceId() > 0) {
+        writer.writeUInt(message->getInstanceId());
+    }
+
     switch (sizeType) {
     case 1:
         writer.writeByte(size);
@@ -33,10 +37,11 @@ void Packet::serialize(IMessage* message, ByteArray& buffer)
     writer.writeBytes(message->getData(), false);
 }
 
-IMessage* Packet::deserialize(ByteArray& buffer)
+IMessage* Packet::deserialize(ByteArray& buffer, bool isFromClient)
 {
     BinaryReader reader(buffer);
     ushort header = 0;
+    uint instanceId = 0;
     uint countReadedBytes = 0;
 
     if (reader.bytesAvailable() < sizeof(header)) {
@@ -46,26 +51,38 @@ IMessage* Packet::deserialize(ByteArray& buffer)
     header = reader.readUShort();
     countReadedBytes += sizeof(header);
 
+    if (isFromClient) {
+        if (reader.bytesAvailable() < sizeof(instanceId)) {
+            return nullptr;
+        }
+
+        instanceId = reader.readUInt();
+        countReadedBytes += sizeof(instanceId);
+    }
+
     ushort id = getMessageId(header);
     ushort sizeType = getMessageSizeType(header);
+    ByteArray data;
 
-    if (reader.bytesAvailable() < sizeType) {
-        return nullptr;
+    if (sizeType > 0) {
+        if (reader.bytesAvailable() < sizeType) {
+            return nullptr;
+        }
+
+        uint size = getMessageSize(sizeType, reader);
+        countReadedBytes += sizeType;
+
+        if (reader.bytesAvailable() < size) {
+            return nullptr;
+        }
+
+        data = reader.readBytes(size);
+        countReadedBytes += size;
     }
-
-    uint size = getMessageSize(sizeType, reader);
-    countReadedBytes += sizeType;
-
-    if (reader.bytesAvailable() < size) {
-        return nullptr;
-    }
-
-    ByteArray data = reader.readBytes(size);
-    countReadedBytes += size;
 
     buffer.erase(buffer.begin(), buffer.begin() + countReadedBytes);
 
-    return new IMessage(id, data);
+    return new IMessage(id, instanceId, data);
 }
 
 ushort Packet::getMessageId(ushort header)

@@ -4,19 +4,23 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QProcess>
+#include <QTimer>
 #include <windows.h>
 
 #include <QDebug>
-#include <QTimer>
+#include <QStandardPaths>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     dofusClientPid(0),
     console(nullptr),
-    server(nullptr)
+    server(nullptr),
+    dataDir(nullptr)
 {
     ui->setupUi(this);
+
+    move(600, 300);
 
     setFixedSize(geometry().width(), geometry().height());
 
@@ -34,11 +38,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->dofusAppPathBrowserButton, SIGNAL(clicked()), this, SLOT(browseDofusPath()));
     connect(ui->dofusStartButton, SIGNAL(clicked()), this, SLOT(startDofusClient()));
 
+    connect(ui->proxyHexdumpCheckBox, SIGNAL(toggled(bool)), this, SLOT(enableHexdump(bool)));
+
     connect(ui->byteCodeSendButton, SIGNAL(clicked()), this, SLOT(sendByteCode()));
 
     checkDofusPath(ui->dofusAppPathLineEdit->text());
 
     openConsole();
+
+    logger = Logger::create(console);
+    logger.log("MAIN", INFO, "Start " + qAppName());
+    logger.enableHexdump(false);
 }
 
 MainWindow::~MainWindow()
@@ -47,14 +57,31 @@ MainWindow::~MainWindow()
         QProcess::execute(QString("taskkill /pid %1 /f").arg(dofusClientPid));
     }
 
+    if (dataDir) {
+        delete dataDir;
+    }
+
     delete ui;
 }
 
 void MainWindow::injectDll()
 {
+    QString dataDirPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+    dataDir = new QDir(dataDirPath);
+
+    if (!dataDir->exists()) {
+        dataDir->mkpath(dataDirPath);
+    }
+
+    QString absoluteDllFilePath = dataDir->absoluteFilePath("hook_connect.dll");
+
+    if (!QFile::exists(absoluteDllFilePath)) {
+        QFile::copy(":/dll/hook_connect.dll", absoluteDllFilePath);
+    }
+
     HANDLE h = OpenProcess(PROCESS_ALL_ACCESS, false, dofusClientPid);
 
-    char dllName[] = "C:\\Workspace\\BouftouProxy\\dll\\hook_connect.dll";
+    const char* dllName = absoluteDllFilePath.toStdString().c_str();
 
     if(h)
     {
@@ -67,6 +94,12 @@ void MainWindow::injectDll()
         CloseHandle(asdc);
         CloseHandle(h);
     }
+}
+
+void MainWindow::enableHexdump(bool enable)
+{
+    qDebug() << enable;
+    logger.enableHexdump(enable);
 }
 
 void MainWindow::checkDofusPath(QString path)

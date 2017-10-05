@@ -1,7 +1,7 @@
 #include "client.h"
 #include "server.h"
 
-Client::Client(QObject *parent) : Proxy(parent)
+Client::Client(QObject *parent) : Proxy(parent, "SRV")
 {
 }
 
@@ -22,7 +22,7 @@ void Client::onMessage(IMessage *message)
 
 void Client::onStateChanged(QAbstractSocket::SocketState state)
 {
-    if (state == QAbstractSocket::ClosingState) {
+    /*if (state == QAbstractSocket::ClosingState) {
         server->close();
-    }
+    }*/
 }

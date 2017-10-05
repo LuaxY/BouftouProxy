@@ -18,3 +18,8 @@ Console::~Console()
 {
     delete ui;
 }
+
+void Console::write(QString log)
+{
+    ui->consoleOuput->append(log);
+}

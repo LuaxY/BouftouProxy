@@ -15,6 +15,8 @@ public:
     explicit Console(QWidget *parent = 0);
     ~Console();
 
+    void write(QString log);
+
 private:
     Ui::console *ui;
 };

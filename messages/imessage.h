@@ -8,14 +8,16 @@
 class IMessage
 {
 public:
-    IMessage(ushort _id, ByteArray _data);
+    IMessage(ushort _id, uint _instanceId, ByteArray _data);
 
     ushort getId();
+    uint getInstanceId();
     ByteArray getData();
     QString getName();
 
 protected:
     ushort id;
+    uint instanceId;
     ByteArray data;
 };
 

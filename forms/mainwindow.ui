@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>BouftouProxy</string>
+   <string>Control</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGroupBox" name="dofusGroup">
@@ -212,6 +212,19 @@
      </property>
      <property name="text">
       <string>Game port :</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="proxyHexdumpCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>150</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Hexdump</string>
      </property>
     </widget>
    </widget>

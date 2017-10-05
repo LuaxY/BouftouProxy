@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -47,6 +48,7 @@ public:
     QLineEdit *proxyGamePortLineEdit;
     QLabel *proxyAuthPortLabel;
     QLabel *proxyGamePortLabel;
+    QCheckBox *proxyHexdumpCheckBox;
     QMenuBar *menuBar;
     QMenu *menuFichier;
     QStatusBar *statusBar;
@@ -111,6 +113,9 @@ public:
         proxyGamePortLabel = new QLabel(proxyGroup);
         proxyGamePortLabel->setObjectName(QStringLiteral("proxyGamePortLabel"));
         proxyGamePortLabel->setGeometry(QRect(10, 50, 61, 16));
+        proxyHexdumpCheckBox = new QCheckBox(proxyGroup);
+        proxyHexdumpCheckBox->setObjectName(QStringLiteral("proxyHexdumpCheckBox"));
+        proxyHexdumpCheckBox->setGeometry(QRect(10, 150, 70, 17));
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -134,7 +139,7 @@ public:
 
     void retranslateUi(QMainWindow *MainWindow)
     {
-        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "BouftouProxy", Q_NULLPTR));
+        MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Control", Q_NULLPTR));
         actionQuit->setText(QApplication::translate("MainWindow", "Quitter", Q_NULLPTR));
         actionConsole->setText(QApplication::translate("MainWindow", "Console", Q_NULLPTR));
         dofusGroup->setTitle(QApplication::translate("MainWindow", "Client", Q_NULLPTR));
@@ -150,6 +155,7 @@ public:
         proxyGamePortLineEdit->setText(QString());
         proxyAuthPortLabel->setText(QApplication::translate("MainWindow", "Auth port :", Q_NULLPTR));
         proxyGamePortLabel->setText(QApplication::translate("MainWindow", "Game port :", Q_NULLPTR));
+        proxyHexdumpCheckBox->setText(QApplication::translate("MainWindow", "Hexdump", Q_NULLPTR));
         menuFichier->setTitle(QApplication::translate("MainWindow", "Fichier", Q_NULLPTR));
 #ifndef QT_NO_STATUSTIP
         statusBar->setStatusTip(QString());

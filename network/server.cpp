@@ -3,7 +3,7 @@
 #include <QAbstractSocket>
 
 Server::Server(QObject *parent) :
-    Proxy(parent),
+    Proxy(parent, "CLI"),
     QTcpServer(parent),
     client(nullptr)
 {

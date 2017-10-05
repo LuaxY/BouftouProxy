@@ -1,8 +1,8 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include "signleton.h"
 #include <QString>
-#include <windows.h>
 
 enum LogType {
     DEBUG,
@@ -14,20 +14,22 @@ enum LogType {
     FATAL
 };
 
-class Logger
+class Console;
+
+class Logger : public Singleton<Logger>
 {
 private:
-    QString name;
-    unsigned short color;
-    unsigned short defaultConsoleColor;
-    HANDLE hConsole;
-
-    setColor(unsigned short color);
+    Console* console;
+    bool isHexdumpEnabled;
 
 public:
-    Logger(QString _name, unsigned short _color);
+    Logger() : console(nullptr), isHexdumpEnabled(false) { }
+    Logger(Console* _console);
 
-    void log(LogType type, QString message);
+    void log(QString name, LogType type, QString message);
+    void dump(QString message);
+
+    void enableHexdump(bool enable);
 };
 
 #endif // LOGGER_H

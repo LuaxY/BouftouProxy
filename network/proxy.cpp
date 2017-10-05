@@ -1,11 +1,13 @@
 #include "proxy.h"
 #include "packet.h"
+#include "utils/hexdump.h"
 
 #include <QDebug>
 
-Proxy::Proxy(QObject *parent) : QObject(parent)
+Proxy::Proxy(QObject *parent, QString _role) : QObject(parent), role(_role)
 {
     socket = new QTcpSocket(this);
+    logger = Logger::instance();
 }
 
 void Proxy::start()
@@ -26,6 +28,8 @@ void Proxy::send(IMessage* message)
 
     packet.serialize(message, buffer);
 
+    logger.dump(hexdump(buffer.data(), buffer.size()));
+
     socket->write(buffer.data(), buffer.size());
 
     delete message;
@@ -38,11 +42,16 @@ void Proxy::onReadyRead()
     ByteArray readedByes(data.data(), data.data() + data.length());
     buffer.insert(buffer.end(), readedByes.begin(), readedByes.end());
 
+    logger.dump(hexdump(buffer.data(), buffer.size()));
+
     IMessage* message = nullptr;
+    bool isFromClient = false;
     Packet packet;
 
-    while ((message = packet.deserialize(buffer))) {
-        qDebug() << message->getName();
+    if (role == "CLI") isFromClient = true;
+
+    while ((message = packet.deserialize(buffer, isFromClient))) {
+        logger.log(role, INFO, message->getName());
         onMessage(message);
     }
 }

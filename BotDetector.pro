@@ -8,7 +8,7 @@ QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = BouftouProxy
+TARGET = BotDetector
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -24,17 +24,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        forms\mainwindow.cpp \
-        utils\hexdump.cpp \
-        utils\booleanbytewrapper.cpp \
-        utils\byteorder.cpp \
-        utils\logger.cpp \
-        io\binaryreader.cpp \
-        io\binarywriter.cpp \
-        io\types\binary64.cpp \
-        io\types\int64.cpp \
-        io\types\uint64.cpp \
+    main.cpp \
+    forms\mainwindow.cpp \
+    utils\hexdump.cpp \
+    utils\booleanbytewrapper.cpp \
+    utils\byteorder.cpp \
+    utils\logger.cpp \
+    io\binaryreader.cpp \
+    io\binarywriter.cpp \
+    io\types\binary64.cpp \
+    io\types\int64.cpp \
+    io\types\uint64.cpp \
     forms/console.cpp \
     network/server.cpp \
     network/client.cpp \
@@ -43,17 +43,18 @@ SOURCES += \
     network/packet.cpp
 
 HEADERS += \
-        forms\mainwindow.h \
-        utils\hexdump.h \
-        utils\booleanbytewrapper.h \
-        utils\byteorder.h \
-        utils\types.h \
-        utils\logger.h \
-        io\binaryreader.h \
-        io\binarywriter.h \
-        io\types\binary64.h \
-        io\types\int64.h \
-        io\types\uint64.h \
+    forms\mainwindow.h \
+    utils\hexdump.h \
+    utils\booleanbytewrapper.h \
+    utils\byteorder.h \
+    utils\types.h \
+    utils\logger.h \
+    utils/signleton.h \
+    io\binaryreader.h \
+    io\binarywriter.h \
+    io\types\binary64.h \
+    io\types\int64.h \
+    io\types\uint64.h \
     forms/console.h \
     network/server.h \
     network/client.h \
@@ -62,7 +63,7 @@ HEADERS += \
     network/packet.h
 
 FORMS += \
-        forms\mainwindow.ui \
+    forms\mainwindow.ui \
     forms/console.ui
 
 RESOURCES += \

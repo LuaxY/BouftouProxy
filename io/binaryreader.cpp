@@ -124,7 +124,6 @@ ByteArray BinaryReader::readBytes()
     for (int i = 0; i < length; i++)
         value.push_back(_buffer[_index + i]);
 
-    value.push_back(0);
     _index += length;
     return value;
 }
@@ -136,7 +135,6 @@ ByteArray BinaryReader::readBytes(int length)
     for (int i = 0; i < length; i++)
         value.push_back(_buffer[_index + i]);
 
-    value.push_back(0);
     _index += length;
     return value;
 }

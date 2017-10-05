@@ -11,7 +11,7 @@ public:
     Packet();
 
     void serialize(IMessage* message, ByteArray& buffer);
-    IMessage* deserialize(ByteArray& buffer);
+    IMessage* deserialize(ByteArray& buffer, bool isFromClient = false);
 
 private:
     ushort getMessageId(ushort header);
