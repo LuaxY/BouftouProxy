@@ -25,24 +25,26 @@ MainWindow::MainWindow(QWidget *parent) :
     setFixedSize(geometry().width(), geometry().height());
 
     ui->dofusStartButton->setEnabled(false);
-    ui->dofusAppPathLineEdit->setText("C:/Program Files (x86)/Ankama/Dofus/app");
+    ui->dofusAppPathLineEdit->setText("C:/Program Files (x86)/Ankama/Dofus/app/Dofus.exe");
 
     ui->byteCodeGroup->setEnabled(false);
 
-    ui->proxyAuthPortLineEdit->setText("5555");
-    ui->proxyGamePortLineEdit->setText("5556");
+    ui->proxyPortLineEdit->setText("5555");
+    ui->proxyStatus->setText("Proxy OFF");
 
     connect(ui->actionConsole, SIGNAL(triggered()), this, SLOT(openConsole()));
 
-    connect(ui->dofusAppPathLineEdit, SIGNAL(textEdited(QString)), this, SLOT(checkDofusPath(QString)));
-    connect(ui->dofusAppPathBrowserButton, SIGNAL(clicked()), this, SLOT(browseDofusPath()));
+    connect(ui->dofusAppPathLineEdit, SIGNAL(textEdited(QString)), this, SLOT(checkDofusClient(QString)));
+    connect(ui->dofusAppPathBrowserButton, SIGNAL(clicked()), this, SLOT(browseDofusClient()));
     connect(ui->dofusStartButton, SIGNAL(clicked()), this, SLOT(startDofusClient()));
 
+    connect(ui->proxyStartButton, SIGNAL(clicked()), this, SLOT(startDofusClient()));
+    connect(ui->proxyFastFowardCheckBox, SIGNAL(stateChanged(int)), this, SLOT(enableFastForward(int)));
     connect(ui->proxyHexdumpCheckBox, SIGNAL(stateChanged(int)), this, SLOT(enableHexdump(int)));
 
     connect(ui->byteCodeSendButton, SIGNAL(clicked()), this, SLOT(sendByteCode()));
 
-    checkDofusPath(ui->dofusAppPathLineEdit->text());
+    checkDofusClient(ui->dofusAppPathLineEdit->text());
 
     openConsole();
 
@@ -96,14 +98,38 @@ void MainWindow::injectDll()
     }
 }
 
+void MainWindow::startProxy()
+{
+    server = new Server(logger, this);
+    server->setNext("213.248.126.39", 5555);
+    server->start(ui->proxyPortLineEdit->text().toShort());
+
+    connect((Proxy*)server, SIGNAL(isInGame()), this, SLOT(onIsInGame()));
+
+    ui->proxyPortLineEdit->setEnabled(false);
+    ui->proxyStartButton->setEnabled(false);
+    ui->proxyStatus->setText("Proxy ON");
+}
+
 void MainWindow::enableHexdump(int state)
 {
     logger->enableHexdump(state == Qt::Checked);
 }
 
-void MainWindow::checkDofusPath(QString path)
+void MainWindow::enableFastForward(int state)
 {
-    if (QDir(path).exists() && QFile(path + "/Dofus.exe").exists())  {
+    server->setFastForward(state == Qt::Checked);
+}
+
+void MainWindow::onIsInGame()
+{
+    ui->proxyFastFowardCheckBox->setChecked(true);
+    ui->byteCodeGroup->setEnabled(true);
+}
+
+void MainWindow::checkDofusClient(QString path)
+{
+    if (QFile(path).exists())  {
         ui->dofusStatus->setText("Dofus found");
         ui->dofusStartButton->setEnabled(true);
     } else {
@@ -112,39 +138,35 @@ void MainWindow::checkDofusPath(QString path)
     }
 }
 
-void MainWindow::browseDofusPath()
+void MainWindow::browseDofusClient()
 {
     QFileDialog dirBrowser;
 
-    dirBrowser.setFileMode(QFileDialog::Directory);
-    dirBrowser.setOption(QFileDialog::ShowDirsOnly);
+    dirBrowser.setFileMode(QFileDialog::ExistingFile);
+    dirBrowser.setNameFilter("*.exe");
 
     if (dirBrowser.exec())
     {
         QString path = dirBrowser.selectedFiles()[0];
         ui->dofusAppPathLineEdit->setText(path);
-        checkDofusPath(path);
+        checkDofusClient(path);
     }
 }
 
 void MainWindow::startDofusClient()
 {
-    QString dofusClientPath = ui->dofusAppPathLineEdit->text() + "/Dofus.exe";
+    QString dofusClientPath = ui->dofusAppPathLineEdit->text();
 
     QProcess::startDetached(dofusClientPath, QStringList(), QString(), &dofusClientPid);
     // TODO: check if dofusClientPid is running, if not enable start button
 
     if (dofusClientPid) {
-        ui->proxyAuthPortLineEdit->setEnabled(false);
-        ui->proxyGamePortLineEdit->setEnabled(false);
-
         ui->dofusStatus->setText("Dofus client started");
         ui->dofusStartButton->setEnabled(false);
 
         QTimer::singleShot(1500, this, SLOT(injectDll()));
 
-        server = new Server(logger, this);
-        server->start(ui->proxyAuthPortLineEdit->text().toShort());
+        startProxy();
     }
 }
 

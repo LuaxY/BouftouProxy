@@ -111,31 +111,28 @@ void BinaryWriter::writeBool(bool data)
 
 void BinaryWriter::writeVarInt(int data)
 {
-
-    std::vector<char> byteArray;
+    //ByteArray ba;
 
     if ((data >= 0) && (data <= MASK_01111111))
     {
-        byteArray.push_back(static_cast<char>(data));
-        writeBytes(byteArray);
+        //ba.push_back(static_cast<char>(data));
+        //writeBytes(ba, false);
+        writeByte(data);
         return;
     }
 
     int c = data;
-    char byte;
+    int b;
 
-    // TODO: check this shit
-    while (c != 0)
-    {
-        byte = static_cast<char>(c & MASK_01111111);
+    while (c != 0) {
+        b = static_cast<char>(c & MASK_01111111);
         c = static_cast<uint>(c >> CHUNK_BIT_SIZE);
 
-        if (c > 0)
-        {
-            byte = byte | MASK_10000000;
+        if (c > 0) {
+            b = b | MASK_10000000;
         }
 
-        writeByte(byte);
+        writeByte(static_cast<char>(b));
     }
 }
 

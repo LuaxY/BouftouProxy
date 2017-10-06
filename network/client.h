@@ -10,15 +10,13 @@ class Client : public Proxy
 public:
     Client(Logger *_logger, QObject *parent = nullptr);
 
-    bool start(Server *_server);
+    bool start(Server *_server, QString ip, short port);
 
 private:
     Server* server;
 
     void onMessage(IMessage* message);
-
-private slots:
-    void onStateChanged(QAbstractSocket::SocketState state);
+    void onData(QByteArray data);
 };
 
 #endif // CLIENT_H

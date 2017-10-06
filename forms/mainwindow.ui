@@ -156,12 +156,12 @@
     <property name="title">
      <string>Proxy</string>
     </property>
-    <widget class="QLineEdit" name="proxyAuthPortLineEdit">
+    <widget class="QLineEdit" name="proxyPortLineEdit">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>40</x>
        <y>20</y>
-       <width>41</width>
+       <width>71</width>
        <height>20</height>
       </rect>
      </property>
@@ -172,46 +172,17 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLineEdit" name="proxyGamePortLineEdit">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>50</y>
-       <width>41</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="proxyAuthPortLabel">
+    <widget class="QLabel" name="proxyPortLabel">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>61</width>
+       <width>31</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Auth port :</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="proxyGamePortLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>61</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Game port :</string>
+      <string>Port :</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="proxyHexdumpCheckBox">
@@ -219,12 +190,54 @@
       <rect>
        <x>10</x>
        <y>150</y>
-       <width>70</width>
+       <width>101</width>
        <height>17</height>
       </rect>
      </property>
      <property name="text">
-      <string>Hexdump</string>
+      <string>Enable Hexdump</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="proxyStartButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>101</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Start Proxy</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="proxyStatus">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Status</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="proxyFastFowardCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>101</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Fast Forward</string>
      </property>
     </widget>
    </widget>

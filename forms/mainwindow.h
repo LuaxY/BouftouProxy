@@ -28,12 +28,15 @@ private:
     Logger* logger;
 
 private slots:
-    void checkDofusPath(QString path = "");
-    void browseDofusPath();
+    void checkDofusClient(QString path = "");
+    void browseDofusClient();
     void startDofusClient();
     void openConsole();
     void injectDll();
+    void startProxy();
     void enableHexdump(int state);
+    void enableFastForward(int state);
+    void onIsInGame();
     void sendByteCode();
 };
 

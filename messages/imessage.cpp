@@ -20,6 +20,11 @@ ByteArray IMessage::getData()
     return data;
 }
 
+void IMessage::setData(ByteArray _data)
+{
+    data = _data;
+}
+
 QString IMessage::getName()
 {
     switch (id) {

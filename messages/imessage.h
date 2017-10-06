@@ -13,6 +13,7 @@ public:
     ushort getId();
     uint getInstanceId();
     ByteArray getData();
+    void setData(ByteArray _data);
     QString getName();
 
 protected:

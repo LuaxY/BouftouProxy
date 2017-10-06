@@ -14,12 +14,18 @@ bool Server::start(ushort port)
 {
     Proxy::start();
 
-    if (!listen(QHostAddress::Any, port)) {
+    if (!listen(QHostAddress::AnyIPv4, port)) {
         logger->log(role, color, LOG_ERROR, QString("Unable to listen on %1:%2").arg("0.0.0.0").arg(port));
         return false;
     }
 
     return true;
+}
+
+void Server::setNext(QString ip, short port)
+{
+    nextIP = ip;
+    nextPort = port;
 }
 
 void Server::incomingConnection(int descriptor)
@@ -37,13 +43,27 @@ void Server::incomingConnection(int descriptor)
     if (client) delete client;
 
     client = new Client(logger);
-    client->start(this);
+    client->start(this, nextIP, nextPort);
 }
 
 void Server::onMessage(IMessage *message)
 {
-    // TODO: alter messages;
+    if (message->getName() == "CharacterSelectionMessage") {
+        setFastForward(true);
+        emit isInGame();
+    }
 
     client->send(message);
+}
+
+void Server::onData(QByteArray data)
+{
+    client->send(data);
+}
+
+void Server::setFastForward(bool enabled)
+{
+    client->setFastForward(enabled);
+    Proxy::setFastForward(enabled);
 }
 
