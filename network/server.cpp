@@ -67,3 +67,17 @@ void Server::setFastForward(bool enabled)
     Proxy::setFastForward(enabled);
 }
 
+void Server::sendByteCode(QByteArray byteCode)
+{
+    ByteArray buffer;
+    ByteArray payload(byteCode.data(), byteCode.data() + byteCode.length());
+    BinaryWriter writer(buffer);
+
+    //writer.writeUTF("AKSF");
+    //writer.writeInt(payload.size());
+    writer.writeBytes(payload, false);
+
+    IMessage* message = new IMessage(6253, 0, buffer);
+    send(message);
+}
+

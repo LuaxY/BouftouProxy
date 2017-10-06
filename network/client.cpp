@@ -39,14 +39,19 @@ void Client::onMessage(IMessage *message)
         int ticketLength = reader.readVarUhInt();
         ByteArray ticket = reader.readBytes(ticketLength);
 
+        QString proxyIP = "127.0.0.1";
+        ushort proxyPort = 5555;
+
         writer.writeVarShort(serverId);
-        writer.writeUTF("127.0.0.1");
-        writer.writeUShort(5555);
+        writer.writeUTF(proxyIP.toStdString());
+        writer.writeUShort(proxyPort);
         writer.writeBool(canCreateNewCharacter);
         writer.writeVarInt(ticketLength);
         writer.writeBytes(ticket, false);
 
         message->setData(hack);
+
+        logger->log(role, color, SUCCESS, QString("Modified game server address to %1:%2").arg(proxyIP).arg(proxyPort));
 
         server->send(message);
         server->setNext(QString::fromStdString(ip), port);

@@ -37,6 +37,8 @@ private slots:
     void enableHexdump(int state);
     void enableFastForward(int state);
     void onIsInGame();
+    void checkByteCodeFile(QString path = "");
+    void browseByteCodeFile();
     void sendByteCode();
 };
 

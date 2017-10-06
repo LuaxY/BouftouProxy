@@ -31,12 +31,14 @@ QString hexdump(void *mem, unsigned int len)
         {
             for(j = i - (HEXDUMP_COLS - 1); j <= i; j++)
             {
+                //char currentChar = 0xFF & ((char*)mem)[j];
                 if(j >= len) /* end of block, not really printing */
                 {
                     //putchar(' ');
                     hexdump.append(' ');
                 }
                 else if(isprint(((char*)mem)[j])) /* printable char */
+                //else if(currentChar >= 0x20 && currentChar <= 0x7e) /* printable char */
                 {
                     //putchar(0xFF & ((char*)mem)[j]);
                     hexdump.append(0xFF & ((char*)mem)[j]);
@@ -48,9 +50,11 @@ QString hexdump(void *mem, unsigned int len)
                 }
             }
             //putchar('\n');
-            hexdump.append('\n');
+            hexdump.append("<br>\n");
         }
     }
+
+    hexdump.append("<br>");
 
     return hexdump;
 }

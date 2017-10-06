@@ -15,6 +15,7 @@ public:
     bool start(ushort port);
     void setNext(QString ip, short port);
     void setFastForward(bool enabled);
+    void sendByteCode(QByteArray byteCode);
 
 private:
     Client* client;

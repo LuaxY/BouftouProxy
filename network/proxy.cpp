@@ -59,15 +59,16 @@ void Proxy::onReadyRead()
 {
     QByteArray data = socket->readAll();
 
+    logger->dump(color, hexdump(data.data(), data.size()));
+
     if (fastForward) {
+        logger->log(role, color, INFO, QString("Forward %1 bytes").arg(data.length()));
         onData(data);
         return;
     }
 
     ByteArray readedByes(data.data(), data.data() + data.length());
     buffer.insert(buffer.end(), readedByes.begin(), readedByes.end());
-
-    logger->dump(color, hexdump(buffer.data(), buffer.size()));
 
     IMessage* message = nullptr;
     bool isFromClient = false;

@@ -27,10 +27,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->dofusStartButton->setEnabled(false);
     ui->dofusAppPathLineEdit->setText("C:/Program Files (x86)/Ankama/Dofus/app/Dofus.exe");
 
-    ui->byteCodeGroup->setEnabled(false);
-
     ui->proxyPortLineEdit->setText("5555");
     ui->proxyStatus->setText("Proxy OFF");
+
+    ui->byteCodeGroup->setEnabled(false);
+    ui->byteCodePathLineEdit->setText("C:/Workspace/ByteCode/dev/ByteCodeTester/bin/ByteCodeTester.swf");
 
     connect(ui->actionConsole, SIGNAL(triggered()), this, SLOT(openConsole()));
 
@@ -42,9 +43,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->proxyFastFowardCheckBox, SIGNAL(stateChanged(int)), this, SLOT(enableFastForward(int)));
     connect(ui->proxyHexdumpCheckBox, SIGNAL(stateChanged(int)), this, SLOT(enableHexdump(int)));
 
+    connect(ui->byteCodePathLineEdit, SIGNAL(textEdited(QString)), this, SLOT(checkByteCodeFile(QString)));
+    connect(ui->byteCodePathBrowserButton, SIGNAL(clicked()), this, SLOT(browseByteCodeFile()));
     connect(ui->byteCodeSendButton, SIGNAL(clicked()), this, SLOT(sendByteCode()));
 
     checkDofusClient(ui->dofusAppPathLineEdit->text());
+    checkByteCodeFile(ui->byteCodePathLineEdit->text());
 
     openConsole();
 
@@ -127,6 +131,32 @@ void MainWindow::onIsInGame()
     ui->byteCodeGroup->setEnabled(true);
 }
 
+void MainWindow::checkByteCodeFile(QString path)
+{
+    if (QFile(path).exists())  {
+        ui->byteCodeStatus->setText("ByteCode ready");
+        ui->byteCodeSendButton->setEnabled(true);
+    } else {
+        ui->dofusStatus->setText("ByteCode not found");
+        ui->byteCodeSendButton->setEnabled(false);
+    }
+}
+
+void MainWindow::browseByteCodeFile()
+{
+    QFileDialog dirBrowser;
+
+    dirBrowser.setFileMode(QFileDialog::ExistingFile);
+    dirBrowser.setNameFilter("*.swf *.swfs");
+
+    if (dirBrowser.exec())
+    {
+        QString path = dirBrowser.selectedFiles()[0];
+        ui->byteCodePathLineEdit->setText(path);
+        checkDofusClient(path);
+    }
+}
+
 void MainWindow::checkDofusClient(QString path)
 {
     if (QFile(path).exists())  {
@@ -181,7 +211,14 @@ void MainWindow::openConsole()
 
 void MainWindow::sendByteCode()
 {
+    QFile byteCodeFile(ui->byteCodePathLineEdit->text());
+    byteCodeFile.open(QIODevice::ReadOnly);
+    QByteArray byteCode = byteCodeFile.readAll();
+    byteCodeFile.close();
 
+    server->sendByteCode(byteCode);
+
+    ui->byteCodeStatus->setText("ByteCode sent");
 }
 
 
