@@ -1,16 +1,27 @@
 #include "client.h"
 #include "server.h"
 
-Client::Client(QObject *parent) : Proxy(parent, "SRV")
+Client::Client(Logger* _logger, QObject *parent) :
+    Proxy(_logger, "SRV", "#e74c3c", parent)
 {
 }
 
-void Client::start(Server* _server)
+bool Client::start(Server* _server)
 {
-    Proxy::start();
-    socket->connectToHost("213.248.126.39", 5555);
-
     server = _server;
+    Proxy::start();
+
+    QString ip = "213.248.126.39";
+    ushort port = 5555;
+
+    socket->connectToHost(ip, port);
+
+    if (!socket->waitForConnected(5000)) {
+        logger->log(role, color, LOG_ERROR, QString("Unable to connect to %1:%2 (timeout 5s)").arg(ip).arg(port));
+        return false;
+    }
+
+    return true;
 }
 
 void Client::onMessage(IMessage *message)

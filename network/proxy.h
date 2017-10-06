@@ -7,23 +7,26 @@
 #include "utils/logger.h"
 #include "messages/imessage.h"
 
+class Console;
+
 class Proxy : public QObject
 {
     Q_OBJECT
 private:
     ByteArray buffer;
-    QString role;
-    Logger logger;
 
 public:
-    Proxy(QObject *parent = nullptr, QString _role = "UNK");
+    Proxy(Logger* _logger, QString _role, QString _color, QObject *parent = nullptr);
 
-    virtual void start();
+    virtual bool start();
     virtual void stop();
     virtual void send(IMessage* message);
 
 protected:
     QTcpSocket* socket;
+    QString role;
+    QString color;
+    Logger* logger;
 
     virtual void onMessage(IMessage* message) = 0;
 

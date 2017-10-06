@@ -25,7 +25,7 @@ private:
     Console* console;
     Server* server;
     QDir* dataDir;
-    Logger logger;
+    Logger* logger;
 
 private slots:
     void checkDofusPath(QString path = "");
@@ -33,7 +33,7 @@ private slots:
     void startDofusClient();
     void openConsole();
     void injectDll();
-    void enableHexdump(bool enable);
+    void enableHexdump(int state);
     void sendByteCode();
 };
 

@@ -10,9 +10,9 @@ class Client;
 class Server : public Proxy, public QTcpServer
 {
 public:
-    Server(QObject *parent = nullptr);
+    Server(Logger *_logger, QObject *parent = nullptr);
 
-    void start(ushort port);
+    bool start(ushort port);
 
 private:
     Client* client;

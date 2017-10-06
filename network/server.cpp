@@ -2,18 +2,24 @@
 #include "client.h"
 #include <QAbstractSocket>
 
-Server::Server(QObject *parent) :
-    Proxy(parent, "CLI"),
+Server::Server(Logger* _logger, QObject *parent) :
+    Proxy(_logger, "CLI", "#3498db", parent),
     QTcpServer(parent),
     client(nullptr)
 {
 
 }
 
-void Server::start(ushort port)
+bool Server::start(ushort port)
 {
     Proxy::start();
-    listen(QHostAddress::Any, port);
+
+    if (!listen(QHostAddress::Any, port)) {
+        logger->log(role, color, LOG_ERROR, QString("Unable to listen on %1:%2").arg("0.0.0.0").arg(port));
+        return false;
+    }
+
+    return true;
 }
 
 void Server::incomingConnection(int descriptor)
@@ -27,7 +33,10 @@ void Server::incomingConnection(int descriptor)
         return;
     }
 
-    client = new Client();
+    // delete previous client
+    if (client) delete client;
+
+    client = new Client(logger);
     client->start(this);
 }
 

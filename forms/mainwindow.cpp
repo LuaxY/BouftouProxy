@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->dofusAppPathBrowserButton, SIGNAL(clicked()), this, SLOT(browseDofusPath()));
     connect(ui->dofusStartButton, SIGNAL(clicked()), this, SLOT(startDofusClient()));
 
-    connect(ui->proxyHexdumpCheckBox, SIGNAL(toggled(bool)), this, SLOT(enableHexdump(bool)));
+    connect(ui->proxyHexdumpCheckBox, SIGNAL(stateChanged(int)), this, SLOT(enableHexdump(int)));
 
     connect(ui->byteCodeSendButton, SIGNAL(clicked()), this, SLOT(sendByteCode()));
 
@@ -46,9 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     openConsole();
 
-    logger = Logger::create(console);
-    logger.log("MAIN", INFO, "Start " + qAppName());
-    logger.enableHexdump(false);
+    logger = new Logger(console);
+    logger->log("MAIN", "#fff", INFO, "Start " + qAppName());
+    logger->enableHexdump(false);
 }
 
 MainWindow::~MainWindow()
@@ -96,10 +96,9 @@ void MainWindow::injectDll()
     }
 }
 
-void MainWindow::enableHexdump(bool enable)
+void MainWindow::enableHexdump(int state)
 {
-    qDebug() << enable;
-    logger.enableHexdump(enable);
+    logger->enableHexdump(state == Qt::Checked);
 }
 
 void MainWindow::checkDofusPath(QString path)
@@ -144,7 +143,7 @@ void MainWindow::startDofusClient()
 
         QTimer::singleShot(1500, this, SLOT(injectDll()));
 
-        server = new Server(this);
+        server = new Server(logger, this);
         server->start(ui->proxyAuthPortLineEdit->text().toShort());
     }
 }

@@ -1,7 +1,6 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include "signleton.h"
 #include <QString>
 
 enum LogType {
@@ -16,18 +15,17 @@ enum LogType {
 
 class Console;
 
-class Logger : public Singleton<Logger>
+class Logger
 {
 private:
     Console* console;
     bool isHexdumpEnabled;
 
 public:
-    Logger() : console(nullptr), isHexdumpEnabled(false) { }
     Logger(Console* _console);
 
-    void log(QString name, LogType type, QString message);
-    void dump(QString message);
+    void log(QString name, QString color, LogType type, QString message);
+    void dump(QString color, QString message);
 
     void enableHexdump(bool enable);
 };

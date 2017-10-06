@@ -23,7 +23,7 @@ QString hexdump(void *mem, unsigned int len)
         else /* end of block, just aligning for ASCII dump */
         {
             //printf("   ");
-            hexdump.append("   ");
+            hexdump.append("&nbsp;&nbsp;&nbsp;");
         }
 
         /* print ASCII dump */

@@ -1,19 +1,25 @@
 #include "proxy.h"
 #include "packet.h"
 #include "utils/hexdump.h"
-
 #include <QDebug>
 
-Proxy::Proxy(QObject *parent, QString _role) : QObject(parent), role(_role)
+Proxy::Proxy(Logger *_logger, QString _role, QString _color, QObject *parent) :
+    QObject(parent),
+    socket(nullptr),
+    role(_role),
+    color(_color)
 {
-    socket = new QTcpSocket(this);
-    logger = Logger::instance();
+    logger = _logger;
 }
 
-void Proxy::start()
+bool Proxy::start()
 {
+    socket = new QTcpSocket(this);
+
     connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
+
+    return true;
 }
 
 void Proxy::stop()
@@ -28,7 +34,7 @@ void Proxy::send(IMessage* message)
 
     packet.serialize(message, buffer);
 
-    logger.dump(hexdump(buffer.data(), buffer.size()));
+    //logger->dump(color, hexdump(buffer.data(), buffer.size()));
 
     socket->write(buffer.data(), buffer.size());
 
@@ -42,7 +48,7 @@ void Proxy::onReadyRead()
     ByteArray readedByes(data.data(), data.data() + data.length());
     buffer.insert(buffer.end(), readedByes.begin(), readedByes.end());
 
-    logger.dump(hexdump(buffer.data(), buffer.size()));
+    logger->dump(color, hexdump(buffer.data(), buffer.size()));
 
     IMessage* message = nullptr;
     bool isFromClient = false;
@@ -51,7 +57,7 @@ void Proxy::onReadyRead()
     if (role == "CLI") isFromClient = true;
 
     while ((message = packet.deserialize(buffer, isFromClient))) {
-        logger.log(role, INFO, message->getName());
+        logger->log(role, color, INFO, message->getName());
         onMessage(message);
     }
 }

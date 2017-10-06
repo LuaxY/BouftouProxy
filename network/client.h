@@ -8,9 +8,9 @@ class Server;
 class Client : public Proxy
 {
 public:
-    Client(QObject *parent = nullptr);
+    Client(Logger *_logger, QObject *parent = nullptr);
 
-    void start(Server *_server);
+    bool start(Server *_server);
 
 private:
     Server* server;
