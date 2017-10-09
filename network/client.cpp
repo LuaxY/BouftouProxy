@@ -67,3 +67,11 @@ void Client::onData(QByteArray data)
 {
     server->send(data);
 }
+
+void Client::onStateChanged(QAbstractSocket::SocketState state)
+{
+    if (state == QAbstractSocket::ClosingState) {
+        server->stop();
+        // TODO: reset
+    }
+}

@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "utils/signswf.h"
+#include <QStandardPaths>
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
@@ -8,7 +10,10 @@
 #include <windows.h>
 
 #include <QDebug>
-#include <QStandardPaths>
+
+BOOL CALLBACK EnumWindowsProc(HWND hWnd, long lParam);
+DWORD pid;
+int posX, posY, sizeW, sizeL;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,22 +21,31 @@ MainWindow::MainWindow(QWidget *parent) :
     dofusClientPid(0),
     console(nullptr),
     server(nullptr),
-    dataDir(nullptr)
+    dataDir(nullptr),
+    settings("config.ini", QSettings::IniFormat)
 {
     ui->setupUi(this);
 
-    move(600, 300);
+    posX = settings.value("dofus/x").toInt();
+    posY = settings.value("dofus/y").toInt();
+    sizeW = settings.value("dofus/w").toInt();
+    sizeL = settings.value("dofus/l").toInt();
+
+    int appX = settings.value("app/x", 600).toInt();
+    int appY = settings.value("app/y", 300).toInt();
+
+    move(appX, appY);
 
     setFixedSize(geometry().width(), geometry().height());
 
     ui->dofusStartButton->setEnabled(false);
-    ui->dofusAppPathLineEdit->setText("C:/Program Files (x86)/Ankama/Dofus/app/Dofus.exe");
+    ui->dofusAppPathLineEdit->setText(settings.value("dofus/path", "").toString());
 
-    ui->proxyPortLineEdit->setText("5555");
+    ui->proxyPortLineEdit->setText(settings.value("proxy/port", "5555").toString());
     ui->proxyStatus->setText("Proxy OFF");
 
     ui->byteCodeGroup->setEnabled(false);
-    ui->byteCodePathLineEdit->setText("C:/Workspace/ByteCode/dev/ByteCodeTester/bin/ByteCodeTester.swf");
+    ui->byteCodePathLineEdit->setText(settings.value("bytecode/path", "").toString());
 
     connect(ui->actionConsole, SIGNAL(triggered()), this, SLOT(openConsole()));
 
@@ -39,7 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->dofusAppPathBrowserButton, SIGNAL(clicked()), this, SLOT(browseDofusClient()));
     connect(ui->dofusStartButton, SIGNAL(clicked()), this, SLOT(startDofusClient()));
 
-    connect(ui->proxyStartButton, SIGNAL(clicked()), this, SLOT(startDofusClient()));
+    connect(ui->proxyStartButton, SIGNAL(clicked()), this, SLOT(startProxy()));
     connect(ui->proxyFastFowardCheckBox, SIGNAL(stateChanged(int)), this, SLOT(enableFastForward(int)));
     connect(ui->proxyHexdumpCheckBox, SIGNAL(stateChanged(int)), this, SLOT(enableHexdump(int)));
 
@@ -100,12 +114,15 @@ void MainWindow::injectDll()
         CloseHandle(asdc);
         CloseHandle(h);
     }
+
+    pid = dofusClientPid;
+    EnumWindows(EnumWindowsProc, 0);
 }
 
 void MainWindow::startProxy()
 {
     server = new Server(logger, this);
-    server->setNext("213.248.126.39", 5555);
+    server->setNext(settings.value("dofus/ip", "213.248.126.39").toString(), settings.value("dofus/port", 5555).toInt());
     server->start(ui->proxyPortLineEdit->text().toShort());
 
     connect((Proxy*)server, SIGNAL(isInGame()), this, SLOT(onIsInGame()));
@@ -194,7 +211,7 @@ void MainWindow::startDofusClient()
         ui->dofusStatus->setText("Dofus client started");
         ui->dofusStartButton->setEnabled(false);
 
-        QTimer::singleShot(1500, this, SLOT(injectDll()));
+        QTimer::singleShot(settings.value("dofus/injectDelay", 1500).toInt(), this, SLOT(injectDll()));
 
         startProxy();
     }
@@ -211,14 +228,39 @@ void MainWindow::openConsole()
 
 void MainWindow::sendByteCode()
 {
+    QString publicKey = settings.value("bytecode/public_key").toString();
+    QString privateKey = settings.value("bytecode/private_key").toString();
+
     QFile byteCodeFile(ui->byteCodePathLineEdit->text());
-    byteCodeFile.open(QIODevice::ReadOnly);
-    QByteArray byteCode = byteCodeFile.readAll();
-    byteCodeFile.close();
+
+    QFileInfo byteCodeFileInfo(byteCodeFile);
+    QByteArray byteCode;
+
+    if (byteCodeFileInfo.fileName().endsWith(".swfs")) {
+        byteCodeFile.open(QIODevice::ReadOnly);
+        byteCode = byteCodeFile.readAll();
+        byteCodeFile.close();
+    } else {
+        SignSwf signSwf(&byteCodeFileInfo, publicKey, privateKey, logger);
+        byteCode = signSwf.sign();
+    }
 
     server->sendByteCode(byteCode);
 
     ui->byteCodeStatus->setText("ByteCode sent");
+}
+
+BOOL CALLBACK EnumWindowsProc(HWND hWnd, long lParam) {
+    if (IsWindowVisible(hWnd)) {
+        DWORD lpdwProcessId;
+        GetWindowThreadProcessId(hWnd,&lpdwProcessId);
+
+        if (pid == lpdwProcessId) {
+            SetWindowPos(hWnd, NULL, posX, posY, sizeW, sizeL, SWP_SHOWWINDOW);
+        }
+    }
+
+    return true;
 }
 
 

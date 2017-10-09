@@ -40,7 +40,8 @@ SOURCES += \
     network/client.cpp \
     network/proxy.cpp \
     messages/imessage.cpp \
-    network/packet.cpp
+    network/packet.cpp \
+    utils/signswf.cpp
 
 HEADERS += \
     forms\mainwindow.h \
@@ -60,7 +61,8 @@ HEADERS += \
     network/client.h \
     network/proxy.h \
     messages/imessage.h \
-    network/packet.h
+    network/packet.h \
+    utils/signswf.h
 
 FORMS += \
     forms\mainwindow.ui \

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QDir>
+#include <QSettings>
 #include "console.h"
 #include "network/server.h"
 #include "utils/logger.h"
@@ -26,6 +27,7 @@ private:
     Server* server;
     QDir* dataDir;
     Logger* logger;
+    QSettings settings;
 
 private slots:
     void checkDofusClient(QString path = "");

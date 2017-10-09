@@ -25,6 +25,9 @@ private:
     void incomingConnection(int descriptor);
     void onMessage(IMessage* message);
     void onData(QByteArray data);
+
+protected slots:
+    void onStateChanged(QAbstractSocket::SocketState state);
 };
 
 #endif // SERVER_H

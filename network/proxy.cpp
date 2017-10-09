@@ -47,6 +47,12 @@ void Proxy::send(IMessage* message)
 
 void Proxy::send(QByteArray data)
 {
+    QString color2;
+    if (color == "#3498db") color2 = "#f1c40f";
+    if (color == "#e74c3c") color2 = "#2ecc71";
+
+    logger->dump(color2, hexdump(buffer.data(), buffer.size()));
+
     socket->write(data);
 }
 

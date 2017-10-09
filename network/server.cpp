@@ -74,10 +74,17 @@ void Server::sendByteCode(QByteArray byteCode)
     BinaryWriter writer(buffer);
 
     //writer.writeUTF("AKSF");
-    //writer.writeInt(payload.size());
+    writer.writeVarInt(payload.size());
     writer.writeBytes(payload, false);
 
     IMessage* message = new IMessage(6253, 0, buffer);
     send(message);
 }
 
+void Server::onStateChanged(QAbstractSocket::SocketState state)
+{
+    if (state == QAbstractSocket::ClosingState) {
+        client->stop();
+        // TODO: reset
+    }
+}
